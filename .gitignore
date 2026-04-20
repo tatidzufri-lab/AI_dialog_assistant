@@ -20,3 +20,7 @@ venv/
 
 # Data
 postgres_data/
+
+# Case description (kept locally only)
+Практический кейс*.docx
+Практический кейс*.md
