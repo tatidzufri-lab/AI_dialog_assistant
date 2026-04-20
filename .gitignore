@@ -1,0 +1,22 @@
+# Secrets
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+.venv_hw/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Data
+postgres_data/
