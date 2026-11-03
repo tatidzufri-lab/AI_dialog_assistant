@@ -4,14 +4,17 @@ services:
     environment:
       POSTGRES_DB: retreat
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: TyKxJmAFKRj2pNcSu9QPOyXsU5yP7K4o
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d retreat"]
       interval: 5s
       timeout: 5s
       retries: 10
-    ports:
-      - "5432:5432"
+    # Порт наружу НЕ публикуем: бот обращается к базе по имени сервиса db
+    # внутри сети compose. Публикация была опасна — docker пишет свои правила
+    # в iptables мимо UFW, поэтому "5432:5432" открывало Postgres в интернет,
+    # несмотря на закрытый файрвол.
+    restart: unless-stopped
     volumes:
       - retreat_data:/var/lib/postgresql/data
 
