@@ -4,7 +4,10 @@ services:
     environment:
       POSTGRES_DB: retreat
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: TyKxJmAFKRj2pNcSu9QPOyXsU5yP7K4o
+      # Единственный источник пароля — .env, который не попадает в репозиторий.
+      # Раньше пароль был записан здесь прямым текстом и разошёлся со строкой
+      # подключения в .env, из-за чего бот не мог войти в базу.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?задайте POSTGRES_PASSWORD в .env}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d retreat"]
       interval: 5s
@@ -22,6 +25,10 @@ services:
     build: .
     env_file:
       - .env
+    environment:
+      # Собирается из того же POSTGRES_PASSWORD, что и у базы, чтобы пароль
+      # нельзя было задать в двух местах по-разному.
+      DATABASE_URL: postgresql+asyncpg://postgres:${POSTGRES_PASSWORD}@db:5432/retreat
     depends_on:
       db:
         condition: service_healthy

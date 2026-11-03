@@ -1,8 +1,14 @@
-aiogram>=3.7.0
-SQLAlchemy>=2.0.30
-asyncpg>=0.29.0
-aiosqlite>=0.20.0
-httpx>=0.27.0
-pydantic>=2.7.0
-pydantic-settings>=2.2.1
-python-dotenv>=1.0.1
+# Версии закреплены по проверенной сборке на сервере.
+#
+# У SQLAlchemy указано дополнение [asyncio]: оно подтягивает greenlet, без
+# которого sqlalchemy.ext.asyncio не импортируется вообще. До версии 2.1
+# greenlet ставился обязательной зависимостью, поэтому строка без дополнения
+# работала; в 2.1 он стал опциональным, и бот начал падать на старте.
+aiogram==3.31.0
+SQLAlchemy[asyncio]==2.1.6
+asyncpg==0.32.0
+aiosqlite==0.22.1
+httpx==0.28.1
+pydantic==2.13.5
+pydantic-settings==2.16.2
+python-dotenv==1.2.4
