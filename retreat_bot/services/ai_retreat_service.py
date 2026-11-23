@@ -141,10 +141,19 @@ class AIRetreatService:
         serialized_draft = json.dumps(draft.model_dump(), ensure_ascii=False, indent=2)
         remaining = max(draft.total_questions - draft.questions_answered, 0)
         progress_line = ti["progress"].format(a=draft.questions_answered, t=draft.total_questions, r=remaining)
+        # Последний рефлексивный вопрос уже задан: этим ходом модель оценивает ответ
+        # и сразу дает рекомендацию. Без этой строки она задавала шестой вопрос.
+        last_answer = (
+            draft.phase == "reflection"
+            and draft.current_question
+            and draft.questions_answered + 1 >= draft.total_questions
+        )
+        final_rule = f"\n\n{ti['final']}" if last_answer else ""
         return (
             f"{ti['new']}: {str(is_new_dialogue).lower()}\n"
             f"{ti['state']}:\n{serialized_draft}\n\n"
             f"{progress_line}\n\n"
             f"{ti['last']}:\n{user_message}\n\n"
             f"{ti['rules']}"
+            f"{final_rule}"
         )

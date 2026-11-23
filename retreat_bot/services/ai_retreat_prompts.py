@@ -299,6 +299,11 @@ TURN_INSTRUCTIONS = {
             "в recommendation). Не задавай уточняющий вопрос вместо нового рефлексивного."
         ),
         "named": "Участницу зовут {name}. Она готова начать разговор.",
+        "final": (
+            "ЭТО ОТВЕТ НА ПОСЛЕДНИЙ РЕФЛЕКСИВНЫЙ ВОПРОС. На этом ходу: latest_answer_evaluated=true, "
+            "коротко откликнись на ответ и сразу переходи в phase=recommendation: выбери тариф, заполни "
+            "final_summary, next_question=null. Новый вопрос НЕ задавай."
+        ),
     },
     "en": {
         "new": "New session",
@@ -322,5 +327,10 @@ TURN_INSTRUCTIONS = {
             "- Reply in English."
         ),
         "named": "The participant's name is {name}. She is ready to start the conversation.",
+        "final": (
+            "THIS IS THE ANSWER TO THE LAST REFLECTIVE QUESTION. On this turn: latest_answer_evaluated=true, "
+            "respond briefly to her answer and move straight to phase=recommendation: choose a format, fill "
+            "final_summary, next_question=null. Do NOT ask a new question."
+        ),
     },
 }
