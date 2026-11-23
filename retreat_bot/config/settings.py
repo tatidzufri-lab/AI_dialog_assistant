@@ -4,6 +4,16 @@ from pathlib import Path
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from config.content_en import (
+    DEFAULT_AUDIENCE_PORTRAITS_EN,
+    DEFAULT_BOOKING_BOT_DISPLAY_NAME_EN,
+    DEFAULT_CRISIS_KEYWORDS_EN,
+    DEFAULT_CRISIS_RESPONSE_EN,
+    DEFAULT_FORBIDDEN_WORDS_EN,
+    DEFAULT_RETREAT_MATERIAL_EN,
+    DEFAULT_RETREAT_TOPIC_EN,
+)
+
 
 DEFAULT_RETREAT_MATERIAL = """
 Ретрит «Познай себя» — это 5-дневное пространство тишины, рефлексии и возвращения
@@ -132,6 +142,17 @@ class Settings(BaseSettings):
         default="Лее", alias="BOOKING_BOT_DATIVE_NAME",
     )
 
+    # Английская версия. Русские поля выше не меняются.
+    retreat_topic_en: str = Field(default=DEFAULT_RETREAT_TOPIC_EN, alias="RETREAT_TOPIC_EN")
+    retreat_material_en: str = Field(default=DEFAULT_RETREAT_MATERIAL_EN, alias="RETREAT_MATERIAL_EN")
+    audience_portraits_en: str = Field(default=DEFAULT_AUDIENCE_PORTRAITS_EN, alias="AUDIENCE_PORTRAITS_EN")
+    forbidden_words_en: str = Field(default=DEFAULT_FORBIDDEN_WORDS_EN, alias="FORBIDDEN_WORDS_EN")
+    crisis_keywords_en: str = Field(default=DEFAULT_CRISIS_KEYWORDS_EN, alias="CRISIS_KEYWORDS_EN")
+    crisis_response_en: str = Field(default=DEFAULT_CRISIS_RESPONSE_EN, alias="CRISIS_RESPONSE_EN")
+    booking_bot_display_name_en: str = Field(
+        default=DEFAULT_BOOKING_BOT_DISPLAY_NAME_EN, alias="BOOKING_BOT_DISPLAY_NAME_EN",
+    )
+
     log_level: str = Field(default="INFO", alias="LOG_LEVEL")
 
     model_config = SettingsConfigDict(
@@ -141,25 +162,42 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    def get_retreat_material(self) -> str:
+    def get_retreat_material(self, lang: str = "ru") -> str:
+        if lang == "en":
+            return self.retreat_material_en.strip()
         if self.retreat_material_file:
             return Path(self.retreat_material_file).read_text(encoding="utf-8").strip()
         return self.retreat_material.strip()
 
-    def get_audience_portraits(self) -> str:
+    def get_audience_portraits(self, lang: str = "ru") -> str:
+        if lang == "en":
+            return self.audience_portraits_en.strip()
         if self.audience_portraits_file:
             return Path(self.audience_portraits_file).read_text(encoding="utf-8").strip()
         return self.audience_portraits.strip()
 
-    def get_forbidden_words(self) -> list[str]:
-        return [w.strip() for w in self.forbidden_words.split(",") if w.strip()]
+    def get_forbidden_words(self, lang: str = "ru") -> list[str]:
+        source = self.forbidden_words_en if lang == "en" else self.forbidden_words
+        return [w.strip() for w in source.split(",") if w.strip()]
 
     def get_crisis_keywords(self) -> list[str]:
-        return [w.strip().lower() for w in self.crisis_keywords.split(",") if w.strip()]
+        """Слова обоих языков сразу: кризис ловим независимо от языка диалога."""
+        words = f"{self.crisis_keywords},{self.crisis_keywords_en}"
+        return [w.strip().lower() for w in words.split(",") if w.strip()]
 
-    def get_booking_bot_url(self) -> str:
+    def get_topic(self, lang: str = "ru") -> str:
+        return self.retreat_topic_en if lang == "en" else self.retreat_topic
+
+    def get_crisis_response(self, lang: str = "ru") -> str:
+        return self.crisis_response_en if lang == "en" else self.crisis_response
+
+    def get_booking_bot_display_name(self, lang: str = "ru") -> str:
+        return self.booking_bot_display_name_en if lang == "en" else self.booking_bot_display_name
+
+    def get_booking_bot_url(self, lang: str = "ru") -> str:
         username = self.booking_bot_username.lstrip("@").strip()
-        return f"https://t.me/{username}"
+        # Лея откроется сразу на английском
+        return f"https://t.me/{username}" + ("?start=en" if lang == "en" else "")
 
 
 @lru_cache(maxsize=1)

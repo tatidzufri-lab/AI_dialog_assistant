@@ -9,6 +9,10 @@ from schemas import (
 )
 
 
+class NameTooShortError(ValueError):
+    """Имя короче двух символов; текст ответа выбирает обработчик по языку."""
+
+
 class RetreatService:
     def __init__(self, crisis_keywords: list[str]) -> None:
         self._crisis_keywords = [w.lower() for w in crisis_keywords if w]
@@ -22,7 +26,7 @@ class RetreatService:
     def validate_participant_name(value: str) -> str:
         cleaned = " ".join(value.split()).strip()
         if len(cleaned) < 2:
-            raise ValueError("Пожалуйста, напиши имя хотя бы из двух символов.")
+            raise NameTooShortError("Пожалуйста, напиши имя хотя бы из двух символов.")
         return cleaned
 
     def start_session(self, total_questions: int) -> RetreatSessionDraft:
