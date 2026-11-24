@@ -26,6 +26,12 @@ def lang_from_text(text: str) -> str | None:
     return None
 
 
+# Пометка демо: ретрит «Познай себя» — учебный сценарий портфолио.
+DEMO_NOTE = {
+    "ru": "(Это демо на учебном сценарии — ретрит вымышленный.)",
+    "en": "(Demo on a fictional retreat scenario.)",
+}
+
 TEXTS = {
     "start": {
         "ru": (
@@ -33,14 +39,16 @@ TEXTS = {
             "Я — твоя проводница в этом коротком разговоре. Мы не торопимся: "
             "я задам тебе несколько мягких вопросов, чтобы услышать, с чем ты пришла, "
             "и помочь выбрать формат, который откликнется именно тебе.\n\n"
-            "Как мне к тебе обращаться?"
+            "Как мне к тебе обращаться?\n\n"
+            f"{DEMO_NOTE['ru']}"
         ),
         "en": (
             "Hello. I'm glad you've stepped into the space of the Know Yourself retreat.\n\n"
             "I'll be your guide in this short conversation. There's no rush: "
             "I'll ask you a few gentle questions to hear what brings you here "
             "and help you choose the format that feels right for you.\n\n"
-            "What should I call you?"
+            "What should I call you?\n\n"
+            f"{DEMO_NOTE['en']}"
         ),
     },
     "not_in_dialog": {
@@ -124,9 +132,17 @@ COMMANDS = {
 DESCRIPTION_EN = (
     "The AI guide of the Know Yourself retreat. A short, gentle conversation: "
     "a few reflective questions and a format recommendation that fits your request. "
-    "Я говорю и по-русски: /language"
+    "Я говорю и по-русски: /language\n\n"
+    + DEMO_NOTE["en"]
 )
-SHORT_DESCRIPTION_EN = "AI guide of the Know Yourself retreat: a few gentle questions and a format that fits you."
+SHORT_DESCRIPTION_EN = "AI guide of the Know Yourself retreat: gentle questions, a fitting format. " + DEMO_NOTE["en"]
+DESCRIPTION_RU = (
+    "AI-проводник ретрита «Познай себя». Короткий бережный разговор: "
+    "несколько рефлексивных вопросов и формат, который подходит твоему запросу. "
+    "I speak English too: /language\n\n"
+    + DEMO_NOTE["ru"]
+)
+SHORT_DESCRIPTION_RU = "AI-проводник ретрита «Познай себя»: мягкие вопросы и формат. " + DEMO_NOTE["ru"]
 
 
 def t(key: str, lang: str, **kw) -> str:

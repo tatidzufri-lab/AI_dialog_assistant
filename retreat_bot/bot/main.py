@@ -7,7 +7,7 @@ from aiogram.types import BotCommand
 
 from bot.handlers import router
 from bot.middlewares import LoggingMiddleware
-from bot.texts import COMMANDS, DESCRIPTION_EN, SHORT_DESCRIPTION_EN
+from bot.texts import COMMANDS, DESCRIPTION_EN, DESCRIPTION_RU, SHORT_DESCRIPTION_EN, SHORT_DESCRIPTION_RU
 from config import get_settings
 from database import create_engine, create_session_factory, init_db
 from services import AIRetreatService, RetreatService
@@ -45,12 +45,14 @@ def setup_logging(level: str) -> None:
 
 
 async def setup_bot_profile(bot: Bot) -> None:
-    """Меню команд на двух языках и описание бота для англоязычных пользователей Telegram."""
+    """Меню команд и описание бота на двух языках (русское — по умолчанию)."""
     try:
         for lang, code in (("ru", None), ("ru", "ru"), ("ru", "uk"), ("en", "en")):
             await bot.set_my_commands(
                 [BotCommand(command=c, description=d) for c, d in COMMANDS[lang]], language_code=code
             )
+        await bot.set_my_description(DESCRIPTION_RU)
+        await bot.set_my_short_description(SHORT_DESCRIPTION_RU)
         await bot.set_my_description(DESCRIPTION_EN, language_code="en")
         await bot.set_my_short_description(SHORT_DESCRIPTION_EN, language_code="en")
     except Exception:
